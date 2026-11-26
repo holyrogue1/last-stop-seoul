@@ -47,8 +47,9 @@ const copy = {
   etaNow: ["도착 임박", "Due"], lastChecked: ["자료 시각", "Data time"], stale: ["시간표·도보 기준", "Timetable and walking estimates"],
   showArea: ["탐색 범위", "Explore"], near: ["서울역 근처", "Near Seoul Station"], city: ["서울 전체", "All Seoul"],
   keyword: ["관심 키워드", "Interests"], all: ["전체", "All"], scenery: ["풍경", "Scenery"], night: ["야경", "Night views"],
-  food: ["맛집", "Food"], busy: ["사람 많은 곳", "Lively places"], quiet: ["조용한 곳", "Quiet places"],
-  shop: ["쇼핑", "Shopping"], bars: ["술집", "Bars"], trail: ["트레킹·둘레길", "Hiking & walking"], district: ["지역", "District"],
+  food: ["맛집", "Food"], busy: ["사람 많은 곳", "Lively places"], quiet: ["조용한 장소", "Quiet places"],
+  romantic: ["낭만 있는 장소", "Romantic spots"],
+  shop: ["쇼핑", "Shopping"], foodAlley: ["먹자골목", "Food alleys"], trail: ["트레킹·둘레길", "Hiking & walking"], district: ["지역", "District"],
   trekTitle: ["검색에서 뜬 트레킹", "Trending searches · Trekking"],
   trekSnapshot: ["Google Trends 제공 화면 · 11.26 15:11 · 1만+ 검색, 1,000% 증가", "Google Trends snapshot · Nov 26, 15:11 · 10K+ searches, up 1,000%"],
   trekAction: ["트레킹 코스 보기", "Explore hiking routes"],
@@ -59,11 +60,14 @@ const copy = {
   trendNoMatch: ["이 화면의 명소와 일치하는 검색어가 없습니다.", "This CSV has no matching places in this view."],
   cityTip: ["지도에서 서울역과의 이동 시간을 확인하세요.", "Use the map to check travel time from Seoul Station."],
   nearTip: ["위에서 정한 출발 시간과 복귀 마감으로 관람 가능 여부를 계산합니다.", "Departure and return times above determine which visits fit."],
-  crowdTip: ["공개 자료가 있는 광화문·덕수궁 권역의 혼잡도를 ‘지금’ 모드에서 확인할 수 있습니다.", "Use Now to check published crowd levels for the Gwanghwamun–Deoksugung area."],
+  cityCrowdTip: ["강남역 거리와 명동의 거리 영상을 보고, 출발 전에 혼잡도를 확인하세요.", "Watch street videos of Gangnam and Myeongdong, then check current crowd levels before you go."],
+  cityCrowdLink: ["서울시 실시간 혼잡도 지도", "Seoul’s live crowd map"],
+  foodAlleyTip: ["건대와 홍대의 골목을 영상으로 둘러보세요. 운영시간은 식당마다 다릅니다.", "Explore the Kondae and Hongdae food alleys on video. Each restaurant has its own hours."],
+  quietTip: ["전시를 천천히 둘러보기 좋은 장소입니다. 관람객 수는 시간대와 전시에 따라 달라집니다.", "Take your time with the exhibitions. Crowds vary by time of day and exhibition."],
+  romanticTip: ["서울을 내려다보는 전망과 성곽길 야경을 영상으로 먼저 보세요.", "Preview Seoul’s skyline and the city wall after dark."],
   crowdArea: ["광화문·덕수궁 혼잡도", "Gwanghwamun–Deoksugung crowd level"],
   crowdedLevels: [["여유", "보통", "약간 붐빔", "붐빔"], ["Quiet", "Moderate", "Somewhat busy", "Busy"]],
   noMatches: ["이 조건에 맞는 명소가 없어요. 관심 키워드나 지역을 바꿔 보세요.", "Try another interest or district to see more places."],
-  noCrowdMatches: ["선택 조건에 맞는 혼잡도 자료가 없습니다. ‘지금’ 모드에서 공개된 권역 데이터를 확인할 수 있습니다.", "No crowd data matches these filters. Use Now to check available district data."],
   map: ["지도에서 경로 보기", "Get directions"],
 };
 
@@ -86,6 +90,8 @@ let interest = "all";
 let trendData = null;
 let badTrendFile = false;
 const allPlaces = [...places, ...discover];
+const cityInterests = new Set(["busy", "quiet", "romantic", "shop", "food-alley"]);
+const interestTips = { busy: "cityCrowdTip", quiet: "quietTip", romantic: "romanticTip", "food-alley": "foodAlleyTip" };
 const saved = new Set();
 const visited = new Map();
 try {
@@ -120,7 +126,8 @@ function renderPlan() {
   byId("live-panel").hidden = !now;
   const start = now ? clock.time : controls.start.value;
   const date = now ? clock.date : controls.date.value;
-  plan = makePlan({ start, end: controls.end.value, date, live: now ? liveData : null, indoors: controls.indoors.checked, interest });
+  plan = makePlan({ start, end: controls.end.value, date, live: now ? liveData : null,
+    indoors: controls.indoors.checked, interest: scope === "near" ? interest : "all" });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) plan = { state: "invalid", options: [] };
   const invalid = plan.state === "invalid";
   const error = byId("time-error");
@@ -185,17 +192,12 @@ function mapRoute(place) {
 }
 
 function discoveryOptions() {
-  const isCrowd = interest === "busy" || interest === "quiet";
   if (collection === "saved") return allPlaces.filter(({ id }) => saved.has(id)).map((place) => ({ place }));
   if (collection === "visited") return [...visited.entries()]
     .sort((a, b) => b[1].localeCompare(a[1]))
     .map(([id, date]) => ({ place: allPlaces.find((place) => place.id === id), date }));
   if (scope === "near") {
-    const options = plan?.options?.length ? plan.options : places.map((place) => ({ place, reason: "unknown" }));
-    if (!isCrowd) return options;
-    const level = mode === "now" ? liveData?.crowd?.level : null;
-    return (interest === "quiet" ? level === 0 : level >= 2)
-      ? options.filter(({ place }) => place.crowdZone) : [];
+    return plan?.options?.length ? plan.options : places.map((place) => ({ place, reason: "unknown" }));
   }
   const candidates = discover.filter((place) => district === "all" || place.district === district);
   const filtered = candidates.filter((place) => interest === "all" || place.tags.includes(interest));
@@ -205,19 +207,21 @@ function discoveryOptions() {
 }
 
 function renderDiscovery(options) {
-  const isCrowd = interest === "busy" || interest === "quiet";
   byId("discovery-controls").hidden = Boolean(collection);
   if (collection) return;
   byId("district-row").hidden = scope !== "city";
-  byId("discovery-note").textContent = text(isCrowd ? "crowdTip" : scope === "city" ? "cityTip" : "nearTip");
+  byId("crowd-guide").hidden = interest !== "busy";
+  byId("discovery-note").textContent = text(interestTips[interest] ?? (scope === "city" ? "cityTip" : "nearTip"));
   byId("feed").setAttribute("aria-label", language ? "Attraction videos" : "서울 명소 영상");
   if (scope !== "city") {
     byId("trend-status").hidden = true;
     return;
   }
-  const terms = trendGroups[district] ?? discover.filter((place) => place.district === district).map((place) => place.term);
+  const terms = interest === "all" || !options.length
+    ? trendGroups[district] ?? discover.filter((place) => place.district === district).map((place) => place.term)
+    : options.map(({ place }) => place.term);
   const comparison = new URL("https://trends.google.com/trends/explore");
-  comparison.search = new URLSearchParams({ date: "today 1-m", geo: "KR-11", q: terms.join(",") });
+  comparison.search = new URLSearchParams({ date: "today 1-m", geo: "KR-11", q: terms.slice(0, 5).join(",") });
   byId("trends-link").href = comparison.href;
   const matching = options.filter(({ score }) => Number.isFinite(score)).length;
   byId("trend-status").hidden = false;
@@ -252,7 +256,7 @@ function renderFeed() {
       <button class="small-button mark-visit" type="button" data-visit="${place.id}" aria-pressed="${wasVisited}" title="${text(wasVisited ? "removeVisit" : "markVisit")}">${text(wasVisited ? "markedVisit" : "markVisit")}</button>
       </div>
     </article>`;
-  }).join("") : `<p class="empty">${text(collection === "visited" ? "noVisited" : collection === "saved" ? "noSaved" : interest === "busy" || interest === "quiet" ? "noCrowdMatches" : "noMatches")}</p>`;
+  }).join("") : `<p class="empty">${text(collection === "visited" ? "noVisited" : collection === "saved" ? "noSaved" : "noMatches")}</p>`;
   for (const id of ["saved", "visited"]) byId(id).setAttribute("aria-pressed", String(collection === id));
   byId("feed").scrollLeft = oldScroll;
 }
@@ -330,8 +334,21 @@ document.querySelectorAll("[name=mode]").forEach((input) => {
 Object.values(controls).forEach((control) => control.addEventListener("input", update));
 for (const input of document.querySelectorAll("[name=scope], [name=interest]")) {
   input.addEventListener("change", () => {
-    if (input.name === "scope") scope = input.value;
-    else interest = input.value;
+    if (input.name === "scope") {
+      scope = input.value;
+      if (scope === "near" && cityInterests.has(interest)) {
+        interest = "all";
+        document.querySelector("[name=interest][value=all]").checked = true;
+      }
+    } else {
+      interest = input.value;
+      if (cityInterests.has(interest)) {
+        scope = "city";
+        district = "all";
+        byId("district").value = district;
+        document.querySelector("[name=scope][value=city]").checked = true;
+      }
+    }
     collection = "";
     byId("feed").scrollLeft = 0;
     update();

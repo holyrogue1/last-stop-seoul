@@ -92,9 +92,10 @@
           <label><input type="radio" name="interest" value="night"><span data-copy="night">야경</span></label>
           <label><input type="radio" name="interest" value="food"><span data-copy="food">맛집</span></label>
           <label><input type="radio" name="interest" value="busy"><span data-copy="busy">사람 많은 곳</span></label>
-          <label><input type="radio" name="interest" value="quiet"><span data-copy="quiet">조용한 곳</span></label>
+          <label><input type="radio" name="interest" value="quiet"><span data-copy="quiet">조용한 장소</span></label>
+          <label><input type="radio" name="interest" value="romantic"><span data-copy="romantic">낭만 있는 장소</span></label>
           <label><input type="radio" name="interest" value="shop"><span data-copy="shop">쇼핑</span></label>
-          <label><input type="radio" name="interest" value="bars"><span data-copy="bars">술집</span></label>
+          <label><input type="radio" name="interest" value="food-alley"><span data-copy="foodAlley">먹자골목</span></label>
           <label><input type="radio" name="interest" value="trail"><span data-copy="trail">트레킹·둘레길</span></label>
         </fieldset>
         <div class="district-row" id="district-row" hidden>
@@ -103,6 +104,7 @@
           <label class="upload"><span data-copy="trendImport">Trends CSV 적용</span><input type="file" id="trends-file" accept=".csv,text/csv"></label>
         </div>
         <p class="discovery-note" id="discovery-note"></p>
+        <p class="discovery-note" id="crowd-guide" hidden><a href="https://data.seoul.go.kr/SeoulRtd/map" target="_blank" rel="noopener" data-copy="cityCrowdLink">서울시 실시간 혼잡도 지도</a></p>
         <p class="discovery-note" id="trend-status" role="status" hidden></p>
       </div>
       <div class="feed" id="feed" tabindex="0" aria-label="서울역 주변 명소 영상"></div>
