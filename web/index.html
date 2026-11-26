@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101016">
+  <meta name="description" content="서울역에서 남은 시간으로 갈 수 있는 명소와 복귀 시간을 확인하는 서울 관광 시연 웹">
+  <title>여행의 종점은 서울 | Last Stop Seoul</title>
+  <link rel="icon" href="/assets/station.webp" type="image/webp">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#plan" data-copy="skip">여정으로 건너뛰기</a>
+  <header class="mast">
+    <div class="wrap mast-inner">
+      <a class="brand" href="#top"><span class="brand-icon" aria-hidden="true">＋</span><span data-copy="brand">여행의 종점은 서울</span></a>
+      <nav aria-label="Sections"><a href="#plan" data-copy="navPlan">지금의 여정</a><a href="#videos" data-copy="navVideo">명소 영상</a></nav>
+      <button type="button" class="language" id="language" aria-label="Switch to English">EN</button>
+    </div>
+  </header>
+
+  <main id="top" class="wrap">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <h1 id="title"><span data-copy="titleFirst">여행의 종점은</span><br><span class="accent" data-copy="titleLast">서울.</span></h1>
+        <p data-copy="intro">서울역에 돌아올 시간만 정하세요. 지금 들를 만한 곳과 돌아올 시각을 찾아드려요.</p>
+        <a class="action" href="#plan" id="find-now"><span data-copy="cta">지금 출발</span><span aria-hidden="true">↗</span></a>
+      </div>
+      <figure class="hero-photo">
+        <picture>
+          <source media="(max-width: 640px)" srcset="/assets/hero-small.webp">
+          <img src="/assets/hero.webp" width="1100" height="660" fetchpriority="high" alt="서울로 7017에서 내려다본 서울역 일대" data-alt="heroAlt">
+        </picture>
+        <figcaption><span data-copy="photo">서울로 7017에서 바라본 서울역</span><a href="https://commons.wikimedia.org/wiki/File:Cityscape_of_Jung-gu_Seoul_Station_Seoullo_7017_20240216.jpg" aria-label="Photo credit: Sean Young" data-copy="photoCredit">사진 출처</a></figcaption>
+      </figure>
+    </section>
+
+    <section class="plan" id="plan" aria-labelledby="plan-title">
+      <div class="section-top">
+        <h2 id="plan-title" data-copy="planTitle">서울역에서 출발</h2>
+        <time id="seoul-clock" aria-label="Seoul local time">KST</time>
+      </div>
+      <fieldset class="mode">
+        <legend class="sr-only" data-copy="modeLegend">출발 시간 모드</legend>
+        <label><input type="radio" name="mode" value="now"><span data-copy="now">지금</span></label>
+        <label><input type="radio" name="mode" value="dawn"><span data-copy="dawn">새벽</span></label>
+        <label><input type="radio" name="mode" value="morning"><span data-copy="morning">아침</span></label>
+        <label><input type="radio" name="mode" value="afternoon" checked><span data-copy="afternoon">오후</span></label>
+      </fieldset>
+      <div class="settings">
+        <label id="start-control"><span data-copy="start">출발 시각</span><input id="start" type="time" value="15:10"></label>
+        <label><span data-copy="end">서울역 복귀 마감</span><input id="end" type="time" value="17:00" aria-describedby="time-error"></label>
+        <label id="date-control"><span data-copy="date">날짜</span><input id="date" type="date" value="2026-11-26"></label>
+        <label class="check"><input id="indoors" type="checkbox"><span data-copy="indoors">실내만 보기</span></label>
+      </div>
+      <p id="time-error" class="error" role="alert" hidden></p>
+      <div class="live-line" id="live-panel" hidden>
+        <div id="weather-status"></div><div id="rail-status"></div><div id="crowd-status"></div>
+        <button type="button" id="refresh" class="small-button" data-copy="refresh">새로 조회</button>
+      </div>
+      <div id="plan-result" class="result" aria-live="polite" aria-atomic="true">
+        <p data-copy="ready">시연 시간을 바꿔 서울역으로 돌아오기 전 들를 수 있는 곳을 확인하세요.</p>
+      </div>
+      <noscript><p>시간을 계산하려면 JavaScript가 필요합니다. 영상과 공식 정보는 아래에서 열 수 있습니다.</p></noscript>
+    </section>
+
+    <section class="feed-section" id="videos" aria-labelledby="video-heading">
+      <div class="section-top">
+        <h2 id="video-heading" data-copy="videoTitle">영상으로 먼저 보기</h2>
+        <div class="feed-actions">
+          <button id="saved" type="button" class="small-button" aria-pressed="false" data-copy="saved">저장한 곳</button>
+          <button id="visited" type="button" class="small-button" aria-pressed="false" data-copy="visited">다녀온 곳</button>
+          <button type="button" id="back" class="round-button" aria-label="이전 영상">←</button>
+          <button type="button" id="next" class="round-button" aria-label="다음 영상">→</button>
+        </div>
+      </div>
+      <div class="discovery" id="discovery-controls">
+        <div class="trek-callout">
+          <div><strong data-copy="trekTitle">검색에서 뜬 트레킹</strong><p data-copy="trekSnapshot">Google Trends 제공 화면 · 11.26 15:11 · 1만+ 검색, 1,000% 증가</p></div>
+          <button id="explore-trek" type="button" class="small-button" data-copy="trekAction">트레킹 코스 보기</button>
+        </div>
+        <fieldset class="pill-group">
+          <legend data-copy="showArea">탐색 범위</legend>
+          <label><input type="radio" name="scope" value="near" checked><span data-copy="near">서울역 근처</span></label>
+          <label><input type="radio" name="scope" value="city"><span data-copy="city">서울 전체</span></label>
+        </fieldset>
+        <fieldset class="pill-group" id="keywords">
+          <legend data-copy="keyword">관심 키워드</legend>
+          <label><input type="radio" name="interest" value="all" checked><span data-copy="all">전체</span></label>
+          <label><input type="radio" name="interest" value="scenery"><span data-copy="scenery">풍경</span></label>
+          <label><input type="radio" name="interest" value="night"><span data-copy="night">야경</span></label>
+          <label><input type="radio" name="interest" value="food"><span data-copy="food">맛집</span></label>
+          <label><input type="radio" name="interest" value="busy"><span data-copy="busy">사람 많은 곳</span></label>
+          <label><input type="radio" name="interest" value="quiet"><span data-copy="quiet">조용한 곳</span></label>
+          <label><input type="radio" name="interest" value="shop"><span data-copy="shop">쇼핑</span></label>
+          <label><input type="radio" name="interest" value="bars"><span data-copy="bars">술집</span></label>
+          <label><input type="radio" name="interest" value="trail"><span data-copy="trail">트레킹·둘레길</span></label>
+        </fieldset>
+        <div class="district-row" id="district-row" hidden>
+          <label><span data-copy="district">지역</span><select id="district"></select></label>
+          <a id="trends-link" href="https://trends.google.com/trends/explore?date=today%201-m&amp;geo=KR-11" target="_blank" rel="noopener" data-copy="trends">Google Trends에서 비교</a>
+          <label class="upload"><span data-copy="trendImport">Trends CSV 적용</span><input type="file" id="trends-file" accept=".csv,text/csv"></label>
+        </div>
+        <p class="discovery-note" id="discovery-note"></p>
+        <p class="discovery-note" id="trend-status" role="status" hidden></p>
+      </div>
+      <div class="feed" id="feed" tabindex="0" aria-label="서울역 주변 명소 영상"></div>
+      <noscript>
+        <ul>
+          <li><a href="https://www.youtube.com/watch?v=eFmXUtirgXM">서울로 7017 도보해설 영상</a></li>
+          <li><a href="https://www.youtube.com/watch?v=V5PFgOHosTA">문화역서울284 공간투어</a></li>
+          <li><a href="https://www.youtube.com/watch?v=xVR0Gd9LJrs">서울역사박물관 상설전시 영상</a></li>
+        </ul>
+      </noscript>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <details id="sources"><summary data-copy="sources">데이터 및 사진 출처</summary>
+      <p data-copy="sourceNote">운영시간과 이동 예상치는 출처 및 실제 이용 조건을 확인해 주세요.</p>
+      <ul><li><a href="https://data.seoul.go.kr/dataList/OA-12764/A/1/datasetView.do">Seoul Open Data Plaza / Subway arrival data</a></li>
+      <li><a href="https://open-meteo.com/">Weather data by Open-Meteo</a></li>
+      <li><a href="https://data.seoul.go.kr/dataList/OA-21778/A/1/datasetView.do">Seoul Open Data Plaza / Area crowd levels</a></li>
+      <li><a href="https://www.airportrailroad.com/train/express/info">AREX / Airport Railroad</a></li>
+      <li><a href="https://www.klimousine.com/bus/limousine.php?bus_no=N6701">K Airport Limousine / N6701</a></li>
+      <li><a href="https://commons.wikimedia.org/wiki/File:Cityscape_of_Jung-gu_Seoul_Station_Seoullo_7017_20240216.jpg">Seoullo 7017, Sean Young</a> / <a href="https://commons.wikimedia.org/wiki/File:문화역서울284_2024.jpg">Culture Station Seoul 284, Narubaru7</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Cropped and compressed.</li>
+      <li><a href="https://commons.wikimedia.org/wiki/File:Seoul_Museum_of_History_in_2025.jpg">Seoul Museum of History, EllalineSeoul</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.</li>
+      <li><a href="https://commons.wikimedia.org/wiki/File:Deoksugung_Palace_20240409_088.jpg">Deoksugung, Mobius6</a> <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Deserted_namdaemun_market_(2533880394).jpg">Namdaemun Market, Francisco Anzola</a> <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>. Cropped and compressed.</li></ul>
+    </details>
+  </footer>
+
+  <dialog id="player" aria-labelledby="player-title">
+    <div class="player-top"><h2 id="player-title"></h2><button type="button" id="close-player" class="round-button" aria-label="영상 닫기">×</button></div>
+    <div class="player-frame" id="player-frame"></div>
+    <div class="player-foot"><p id="player-credit"></p><a id="video-source" href="https://www.youtube.com/" target="_blank" rel="noopener" data-copy="youtube">YouTube 원본</a></div>
+  </dialog>
+</body>
+</html>

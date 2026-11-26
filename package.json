@@ -1,0 +1,10 @@
+{
+  "name": "seoul-one-more",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "start": "node scripts/preview.mjs"
+  }
+}
