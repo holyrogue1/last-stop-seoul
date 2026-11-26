@@ -7,7 +7,8 @@ const copy = {
   navPlan: ["지금의 여정", "Plan"], navVideo: ["명소 영상", "Watch"],
   titleFirst: ["여행의 종점은", "Last stop,"], titleLast: ["서울.", "Seoul."],
   intro: ["서울역에 돌아올 시간만 정하세요. 지금 들를 만한 곳과 돌아올 시각을 찾아드려요.", "Set your return time. See what fits before you head back to Seoul Station."],
-  cta: ["지금 출발", "Leave now"], photo: ["서울로 7017에서 바라본 서울역", "Seoul Station from Seoullo 7017"],
+  cta: ["지금 출발", "Leave now"], browse: ["명소 둘러보기", "Explore Seoul"],
+  photo: ["서울로 7017에서 바라본 서울역", "Seoul Station from Seoullo 7017"],
   photoCredit: ["사진 출처", "Photo credit"], heroAlt: ["서울로 7017에서 내려다본 서울역 일대", "The Seoul Station neighbourhood from Seoullo 7017"],
   planTitle: ["서울역에서 출발", "Start at Seoul Station"], modeLegend: ["출발 시간 모드", "Departure modes"],
   now: ["지금", "Now"], dawn: ["새벽", "Early"], morning: ["아침", "Morning"], afternoon: ["오후", "Afternoon"],
@@ -22,7 +23,7 @@ const copy = {
   noVisited: ["여행을 마친 곳에 ‘다녀왔어요’를 눌러보세요. 여기서 그날의 영상과 명소를 다시 볼 수 있어요.", "Mark a place as visited to watch its video again and see when you added it."],
   sources: ["데이터 및 사진 출처", "Data and photo credits"],
   sourceNote: ["운영시간과 이동 예상치는 출처 및 실제 이용 조건을 확인해 주세요.", "Check official sources for opening hours and travel conditions."],
-  youtube: ["YouTube 원본", "Open on YouTube"], source: ["공식 관람 안내", "Visit information"],
+  youtube: ["YouTube 원본", "Open on YouTube"], source: ["공식 안내", "Official guide"],
   live: ["실시간", "Live"], planned: ["공식 운영시간 기준", "Scheduled hours"],
   timeError: ["같은 날 출발 시각보다 늦은 복귀 시간을 입력해 주세요.", "Enter a return time later on the same day."],
   dawnTitle: ["새벽에는 공항 교통부터 확인하세요", "Check early airport transport first"],
@@ -46,11 +47,11 @@ const copy = {
   raining: ["강수", "Wet"], dry: ["강수 없음", "Dry"], expected: ["예정", "expected"],
   etaNow: ["도착 임박", "Due"], lastChecked: ["자료 시각", "Data time"], stale: ["시간표·도보 기준", "Timetable and walking estimates"],
   showArea: ["탐색 범위", "Explore"], near: ["서울역 근처", "Near Seoul Station"], city: ["서울 전체", "All Seoul"],
-  keyword: ["관심 키워드", "Interests"], all: ["전체", "All"], scenery: ["풍경", "Scenery"], night: ["야경", "Night views"],
+  keyword: ["테마", "Themes"], all: ["전체", "All"], scenery: ["풍경", "Scenery"], night: ["야경", "Night views"],
   food: ["맛집", "Food"], busy: ["사람 많은 곳", "Lively places"], quiet: ["조용한 장소", "Quiet places"],
   romantic: ["낭만 있는 장소", "Romantic spots"],
   shop: ["쇼핑", "Shopping"], foodAlley: ["먹자골목", "Food alleys"], trail: ["트레킹·둘레길", "Hiking & walking"], district: ["지역", "District"],
-  trekTitle: ["검색에서 뜬 트레킹", "Trending searches · Trekking"],
+  trendTools: ["검색 트렌드", "Search trends"], trekTitle: ["검색에서 뜬 트레킹", "Trending searches · Trekking"],
   trekSnapshot: ["Google Trends 제공 화면 · 11.26 15:11 · 1만+ 검색, 1,000% 증가", "Google Trends snapshot · Nov 26, 15:11 · 10K+ searches, up 1,000%"],
   trekAction: ["트레킹 코스 보기", "Explore hiking routes"],
   trends: ["Google Trends에서 비교", "Compare in Google Trends"], trendImport: ["Trends CSV 적용", "Apply Trends CSV"],
@@ -68,10 +69,11 @@ const copy = {
   crowdArea: ["광화문·덕수궁 혼잡도", "Gwanghwamun–Deoksugung crowd level"],
   crowdedLevels: [["여유", "보통", "약간 붐빔", "붐빔"], ["Quiet", "Moderate", "Somewhat busy", "Busy"]],
   noMatches: ["이 조건에 맞는 명소가 없어요. 관심 키워드나 지역을 바꿔 보세요.", "Try another interest or district to see more places."],
-  map: ["지도에서 경로 보기", "Get directions"],
+  map: ["길찾기", "Directions"],
 };
 
 const byId = (id) => document.getElementById(id);
+const feed = byId("feed");
 const controls = {
   start: byId("start"), end: byId("end"), date: byId("date"), indoors: byId("indoors"),
 };
@@ -207,16 +209,23 @@ function discoveryOptions() {
 }
 
 function renderDiscovery(options) {
+  byId("explorer").classList.toggle("collection-view", Boolean(collection));
   byId("discovery-controls").hidden = Boolean(collection);
+  byId("feed-notes").hidden = Boolean(collection);
+  const heading = collection ? text(collection)
+    : interest !== "all" ? text(document.querySelector("[name=interest]:checked + span").dataset.copy)
+    : scope === "city" ? districts[district][language] : text("near");
+  byId("feed-heading").textContent = heading;
+  const count = options.length;
+  const countLabel = language ? `${count} ${count === 1 ? "place" : "places"}` : `${count}곳`;
+  const counter = byId("feed-count");
+  if (counter.textContent !== countLabel) counter.textContent = countLabel;
   if (collection) return;
   byId("district-row").hidden = scope !== "city";
+  byId("trend-import").hidden = scope !== "city";
   byId("crowd-guide").hidden = interest !== "busy";
   byId("discovery-note").textContent = text(interestTips[interest] ?? (scope === "city" ? "cityTip" : "nearTip"));
-  byId("feed").setAttribute("aria-label", language ? "Attraction videos" : "서울 명소 영상");
-  if (scope !== "city") {
-    byId("trend-status").hidden = true;
-    return;
-  }
+  if (scope !== "city") return;
   const terms = interest === "all" || !options.length
     ? trendGroups[district] ?? discover.filter((place) => place.district === district).map((place) => place.term)
     : options.map(({ place }) => place.term);
@@ -224,18 +233,18 @@ function renderDiscovery(options) {
   comparison.search = new URLSearchParams({ date: "today 1-m", geo: "KR-11", q: terms.slice(0, 5).join(",") });
   byId("trends-link").href = comparison.href;
   const matching = options.filter(({ score }) => Number.isFinite(score)).length;
-  byId("trend-status").hidden = false;
   byId("trend-status").textContent = badTrendFile ? text("trendError") : trendData
-    ? `${trendData.range.join(" – ")} · ${matching
+    ? `${trendData.range.join(" ~ ")} · ${matching
       ? (language ? `${matching} places ranked by search interest` : `명소 ${matching}곳 검색 관심도 반영`) : text("trendNoMatch")}`
     : text("trendTip");
 }
 
 function renderFeed() {
-  const oldScroll = byId("feed").scrollLeft;
+  const oldScroll = feed.scrollLeft;
   const visible = discoveryOptions();
   renderDiscovery(visible);
-  byId("feed").innerHTML = visible.length ? visible.map((item) => {
+  feed.dataset.count = String(Math.min(2, visible.length));
+  feed.innerHTML = visible.length ? visible.map((item) => {
     const { place } = item;
     const pinned = saved.has(place.id);
     const tag = place.district ? districts[place.district][language] : collection ? text("near") : placeTag(item);
@@ -243,22 +252,34 @@ function renderFeed() {
     const memory = item.date ? `<p>${text("visitDate")} <time datetime="${item.date}">${item.date}</time></p>` : "";
     const wasVisited = visited.has(place.id);
     return `<article class="reel" data-id="${place.id}" data-status="${item.reason ?? "ok"}">
-      <div class="reel-media">
+      <div class="reel-media${place.district ? " video-cover" : ""}">
         <img src="${place.image}" width="540" height="660" loading="lazy" alt="${place.posterAlt[language]}">
         <button class="bookmark" type="button" data-save="${place.id}" aria-pressed="${pinned}" aria-label="${text("save")} ${place.title[language]}">${text(pinned ? "savedOne" : "save")}</button>
         <button class="play" type="button" data-video="${place.id}" aria-label="${text("play")} ${place.title[language]}"><span aria-hidden="true">▶</span></button>
+      </div>
+      <div class="reel-text">
         <div class="reel-info"><p>${tag}</p><h3>${place.title[language]}</h3></div>
-      </div>
-      <div class="reel-text"><p>${place.description[language]}</p>${score}${memory}<div class="reel-links">
-        <a href="${place.link}" target="_blank" rel="noopener">${text("source")}</a>
-        <a href="${mapRoute(place)}" target="_blank" rel="noopener">${text("map")}</a>
-      </div>
-      <button class="small-button mark-visit" type="button" data-visit="${place.id}" aria-pressed="${wasVisited}" title="${text(wasVisited ? "removeVisit" : "markVisit")}">${text(wasVisited ? "markedVisit" : "markVisit")}</button>
+        <p>${place.description[language]}</p>${score}${memory}
+        <div class="reel-actions">
+          <div class="reel-links">
+            <a href="${mapRoute(place)}" target="_blank" rel="noopener">${text("map")} <span aria-hidden="true">↗</span></a>
+            <a href="${place.link}" target="_blank" rel="noopener">${text("source")}</a>
+          </div>
+          <button class="small-button mark-visit" type="button" data-visit="${place.id}" aria-pressed="${wasVisited}" title="${text(wasVisited ? "removeVisit" : "markVisit")}">${text(wasVisited ? "markedVisit" : "markVisit")}</button>
+        </div>
       </div>
     </article>`;
   }).join("") : `<p class="empty">${text(collection === "visited" ? "noVisited" : collection === "saved" ? "noSaved" : "noMatches")}</p>`;
   for (const id of ["saved", "visited"]) byId(id).setAttribute("aria-pressed", String(collection === id));
-  byId("feed").scrollLeft = oldScroll;
+  feed.scrollLeft = oldScroll;
+  syncFeedControls();
+}
+
+function syncFeedControls() {
+  const remaining = feed.scrollWidth - feed.clientWidth;
+  byId("feed-navigation").hidden = remaining <= 2;
+  byId("back").disabled = feed.scrollLeft <= 2;
+  byId("next").disabled = feed.scrollLeft >= remaining - 2;
 }
 
 function update() { renderPlan(); renderFeed(); }
@@ -320,7 +341,7 @@ function openVideo(place, trigger) {
   byId("video-source").href = "https://www.youtube.com/watch?v=" + place.video;
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.youtube-nocookie.com/embed/${place.video}?autoplay=1&playsinline=1&rel=0`;
-  iframe.title = place.title[language] + " — " + text("play");
+  iframe.title = place.title[language] + " (" + text("play") + ")";
   iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share";
   iframe.referrerPolicy = "strict-origin-when-cross-origin";
   iframe.allowFullscreen = true;
@@ -427,10 +448,14 @@ byId("feed").addEventListener("click", (event) => {
 });
 for (const [id, step] of [["back", -1], ["next", 1]]) {
   byId(id).addEventListener("click", () => {
-    const stepWidth = byId("feed").querySelector(".reel")?.getBoundingClientRect().width ?? 0;
-    byId("feed").scrollBy({ left: (stepWidth + 16) * step, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    const [first, second] = feed.children;
+    if (!first || !second) return;
+    const distance = second.offsetLeft - first.offsetLeft;
+    feed.scrollBy({ left: distance * step, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
 }
+feed.addEventListener("scroll", syncFeedControls, { passive: true });
+new ResizeObserver(syncFeedControls).observe(feed);
 byId("close-player").addEventListener("click", () => byId("player").close());
 byId("player").addEventListener("close", () => {
   byId("player-frame").replaceChildren();

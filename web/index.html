@@ -25,7 +25,10 @@
       <div class="hero-copy">
         <h1 id="title"><span data-copy="titleFirst">여행의 종점은</span><br><span class="accent" data-copy="titleLast">서울.</span></h1>
         <p data-copy="intro">서울역에 돌아올 시간만 정하세요. 지금 들를 만한 곳과 돌아올 시각을 찾아드려요.</p>
-        <a class="action" href="#plan" id="find-now"><span data-copy="cta">지금 출발</span><span aria-hidden="true">↗</span></a>
+        <div class="hero-actions">
+          <a class="action" href="#plan" id="find-now"><span data-copy="cta">지금 출발</span><span aria-hidden="true">↗</span></a>
+          <a class="browse-action" href="#videos"><span data-copy="browse">명소 둘러보기</span><span aria-hidden="true">↓</span></a>
+        </div>
       </div>
       <figure class="hero-photo">
         <picture>
@@ -71,43 +74,67 @@
         <div class="feed-actions">
           <button id="saved" type="button" class="small-button" aria-pressed="false" data-copy="saved">저장한 곳</button>
           <button id="visited" type="button" class="small-button" aria-pressed="false" data-copy="visited">다녀온 곳</button>
-          <button type="button" id="back" class="round-button" aria-label="이전 영상">←</button>
-          <button type="button" id="next" class="round-button" aria-label="다음 영상">→</button>
         </div>
       </div>
-      <div class="discovery" id="discovery-controls">
-        <div class="trek-callout">
-          <div><strong data-copy="trekTitle">검색에서 뜬 트레킹</strong><p data-copy="trekSnapshot">Google Trends 제공 화면 · 11.26 15:11 · 1만+ 검색, 1,000% 증가</p></div>
-          <button id="explore-trek" type="button" class="small-button" data-copy="trekAction">트레킹 코스 보기</button>
+      <div class="explorer" id="explorer">
+        <div class="discovery" id="discovery-controls">
+          <fieldset class="pill-group scope-group">
+            <legend data-copy="showArea">탐색 범위</legend>
+            <div class="scope-options">
+              <label><input type="radio" name="scope" value="near" checked><span data-copy="near">서울역 근처</span></label>
+              <label><input type="radio" name="scope" value="city"><span data-copy="city">서울 전체</span></label>
+            </div>
+          </fieldset>
+          <label class="district-row" id="district-row" hidden><span data-copy="district">지역</span><select id="district"></select></label>
+          <fieldset class="pill-group" id="keywords">
+            <legend data-copy="keyword">테마</legend>
+            <div class="category-options">
+              <label><input type="radio" name="interest" value="all" checked><span data-copy="all">전체</span></label>
+              <label><input type="radio" name="interest" value="food-alley"><span data-copy="foodAlley">먹자골목</span></label>
+              <label><input type="radio" name="interest" value="busy"><span data-copy="busy">사람 많은 곳</span></label>
+              <label><input type="radio" name="interest" value="shop"><span data-copy="shop">쇼핑</span></label>
+              <label><input type="radio" name="interest" value="quiet"><span data-copy="quiet">조용한 장소</span></label>
+              <label><input type="radio" name="interest" value="romantic"><span data-copy="romantic">낭만 있는 장소</span></label>
+              <label><input type="radio" name="interest" value="scenery"><span data-copy="scenery">풍경</span></label>
+              <label><input type="radio" name="interest" value="night"><span data-copy="night">야경</span></label>
+              <label><input type="radio" name="interest" value="food"><span data-copy="food">맛집</span></label>
+              <label><input type="radio" name="interest" value="trail"><span data-copy="trail">트레킹·둘레길</span></label>
+            </div>
+          </fieldset>
+          <details class="trend-tools" id="trend-tools">
+            <summary data-copy="trendTools">검색 트렌드</summary>
+            <div class="trend-content">
+              <div class="trek-callout">
+                <strong data-copy="trekTitle">검색에서 뜬 트레킹</strong>
+                <p data-copy="trekSnapshot">Google Trends 제공 화면 · 11.26 15:11 · 1만+ 검색, 1,000% 증가</p>
+                <button id="explore-trek" type="button" class="small-button" data-copy="trekAction">트레킹 코스 보기</button>
+              </div>
+              <div class="trend-import" id="trend-import" hidden>
+                <a id="trends-link" href="https://trends.google.com/trends/explore?date=today%201-m&amp;geo=KR-11" target="_blank" rel="noopener" data-copy="trends">Google Trends에서 비교</a>
+                <label class="upload"><span data-copy="trendImport">Trends CSV 적용</span><input type="file" id="trends-file" accept=".csv,text/csv"></label>
+                <p class="discovery-note" id="trend-status" role="status"></p>
+              </div>
+            </div>
+          </details>
         </div>
-        <fieldset class="pill-group">
-          <legend data-copy="showArea">탐색 범위</legend>
-          <label><input type="radio" name="scope" value="near" checked><span data-copy="near">서울역 근처</span></label>
-          <label><input type="radio" name="scope" value="city"><span data-copy="city">서울 전체</span></label>
-        </fieldset>
-        <fieldset class="pill-group" id="keywords">
-          <legend data-copy="keyword">관심 키워드</legend>
-          <label><input type="radio" name="interest" value="all" checked><span data-copy="all">전체</span></label>
-          <label><input type="radio" name="interest" value="scenery"><span data-copy="scenery">풍경</span></label>
-          <label><input type="radio" name="interest" value="night"><span data-copy="night">야경</span></label>
-          <label><input type="radio" name="interest" value="food"><span data-copy="food">맛집</span></label>
-          <label><input type="radio" name="interest" value="busy"><span data-copy="busy">사람 많은 곳</span></label>
-          <label><input type="radio" name="interest" value="quiet"><span data-copy="quiet">조용한 장소</span></label>
-          <label><input type="radio" name="interest" value="romantic"><span data-copy="romantic">낭만 있는 장소</span></label>
-          <label><input type="radio" name="interest" value="shop"><span data-copy="shop">쇼핑</span></label>
-          <label><input type="radio" name="interest" value="food-alley"><span data-copy="foodAlley">먹자골목</span></label>
-          <label><input type="radio" name="interest" value="trail"><span data-copy="trail">트레킹·둘레길</span></label>
-        </fieldset>
-        <div class="district-row" id="district-row" hidden>
-          <label><span data-copy="district">지역</span><select id="district"></select></label>
-          <a id="trends-link" href="https://trends.google.com/trends/explore?date=today%201-m&amp;geo=KR-11" target="_blank" rel="noopener" data-copy="trends">Google Trends에서 비교</a>
-          <label class="upload"><span data-copy="trendImport">Trends CSV 적용</span><input type="file" id="trends-file" accept=".csv,text/csv"></label>
+        <div class="feed-panel">
+          <div class="feed-top">
+            <div class="feed-label">
+              <h3 id="feed-heading"></h3>
+              <p id="feed-count" role="status"></p>
+            </div>
+            <div class="feed-navigation" id="feed-navigation" hidden>
+              <button type="button" id="back" class="round-button" aria-label="이전 영상" aria-controls="feed">←</button>
+              <button type="button" id="next" class="round-button" aria-label="다음 영상" aria-controls="feed">→</button>
+            </div>
+          </div>
+          <div class="feed-notes" id="feed-notes">
+            <p class="discovery-note" id="discovery-note"></p>
+            <p class="discovery-note" id="crowd-guide" hidden><a href="https://data.seoul.go.kr/SeoulRtd/map" target="_blank" rel="noopener" data-copy="cityCrowdLink">서울시 실시간 혼잡도 지도</a></p>
+          </div>
+          <div class="feed" id="feed" tabindex="0" role="region" aria-labelledby="feed-heading"></div>
         </div>
-        <p class="discovery-note" id="discovery-note"></p>
-        <p class="discovery-note" id="crowd-guide" hidden><a href="https://data.seoul.go.kr/SeoulRtd/map" target="_blank" rel="noopener" data-copy="cityCrowdLink">서울시 실시간 혼잡도 지도</a></p>
-        <p class="discovery-note" id="trend-status" role="status" hidden></p>
       </div>
-      <div class="feed" id="feed" tabindex="0" aria-label="서울역 주변 명소 영상"></div>
       <noscript>
         <ul>
           <li><a href="https://www.youtube.com/watch?v=eFmXUtirgXM">서울로 7017 도보해설 영상</a></li>
