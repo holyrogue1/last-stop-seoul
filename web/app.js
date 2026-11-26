@@ -5,6 +5,7 @@ import { keywordKey, parseTrends } from "./trends.js";
 const copy = {
   skip: ["여정으로 건너뛰기", "Skip to the planner"], brand: ["여행의 종점은 서울", "Last Stop Seoul"],
   navPlan: ["지금의 여정", "Plan"], navVideo: ["명소 영상", "Watch"],
+  album: ["내 앨범", "My album"], addToAlbum: ["앨범에 기록", "Add to album"],
   titleFirst: ["여행의 종점은", "Last stop,"], titleLast: ["서울.", "Seoul."],
   intro: ["서울역에 돌아올 시간만 정하세요. 지금 들를 만한 곳과 돌아올 시각을 찾아드려요.", "Set your return time. See what fits before you head back to Seoul Station."],
   cta: ["지금 출발", "Leave now"], browse: ["명소 둘러보기", "Explore Seoul"],
@@ -267,6 +268,7 @@ function renderFeed() {
           <div class="reel-links">
             <a href="${mapRoute(place)}" target="_blank" rel="noopener">${text("map")} <span aria-hidden="true">↗</span></a>
             <a href="${place.link}" target="_blank" rel="noopener">${text("source")}</a>
+            ${item.date ? `<a href="/album?place=${encodeURIComponent(place.id)}">${text("addToAlbum")}</a>` : ""}
           </div>
           <button class="small-button mark-visit" type="button" data-visit="${place.id}" aria-pressed="${wasVisited}" title="${text(wasVisited ? "removeVisit" : "markVisit")}">${text(wasVisited ? "markedVisit" : "markVisit")}</button>
         </div>

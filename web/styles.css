@@ -48,6 +48,7 @@ a, button, input, summary, [tabindex] { -webkit-tap-highlight-color:transparent;
 .mast nav { display:flex; align-items:center; gap:var(--s6); margin-left:auto; color:var(--muted); }
 .mast nav a { display:grid; place-items:center; min-height:var(--touch); text-decoration:none; }
 .mast nav a:hover { color:var(--paper); }
+.mast nav .album-link { color:var(--accent); white-space:nowrap; }
 .brand { display:flex; align-items:center; gap:var(--s2); min-height:var(--touch); font-size:var(--t3); font-weight:700; text-decoration:none; white-space:nowrap; }
 .brand-icon { flex:0 0 var(--s8); width:var(--s8); height:var(--s8); }
 .language,.small-button,.round-button { background:var(--panel); min-height:var(--touch); border:1px solid var(--line); border-radius:var(--s2); padding:var(--s2) var(--s3); }
@@ -183,6 +184,7 @@ dialog::backdrop { background:var(--shadow); }
   :root { --gutter:16px; --t5:24px; }
   .mast-inner { gap:var(--s3); min-height:var(--s16); }
   .mast nav { gap:var(--s2); font-size:var(--t1); }
+  .mast nav .mast-section { display:none; }
   .mast .brand { font-size:var(--t2); }
   .hero { grid-template-columns:minmax(0,1fr); margin-block:var(--s6) var(--s8); }
   .hero-copy { padding-block:0; }
@@ -201,7 +203,7 @@ dialog::backdrop { background:var(--shadow); }
   .result { padding:var(--s3); }
 }
 @media (max-width: 365px) {
-  .mast nav { display:none; }
+  .mast-inner { gap:var(--s2); }
 }
 @media (prefers-reduced-motion:reduce) {
   *, *::before, *::after { transition:none !important; animation:none !important; scroll-behavior:auto !important; }

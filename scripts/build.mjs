@@ -9,12 +9,17 @@ const types = {
   ".woff2": "font/woff2", ".txt": "text/plain; charset=utf-8",
 };
 const images = (await readdir(new URL("web/assets/", root))).map((name) => "assets/" + name);
-const files = ["index.html", "styles.css", "app.js", "planner.js", "trends.js", "discover.js", ...images];
+const files = [
+  "index.html", "styles.css", "app.js", "planner.js", "trends.js", "discover.js",
+  "album.html", "album.css", "album.js", "album-store.js", ...images,
+];
 const assets = {};
 for (const path of files) {
   const bytes = await readFile(new URL("web/" + path, root));
   assets["/" + path] = [types[extname(path)], bytes.toString("base64")];
 }
+assets["/album"] = assets["/album.html"];
+assets["/album/"] = assets["/album.html"];
 const manifest = new URL(".openai/hosting.json", root);
 const { project_id: id, static: staticMode } = JSON.parse(await readFile(manifest, "utf8"));
 if (!id || staticMode) throw new Error("Worker hosting manifest is required");

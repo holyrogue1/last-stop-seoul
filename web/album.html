@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101016">
+  <meta name="description" content="서울에서 찍은 사진과 동영상을 모아보는 개인 여행 앨범">
+  <title>나의 서울 포토북 | 여행의 종점은 서울</title>
+  <link rel="icon" href="/assets/last-stop-seoul.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/album.css">
+  <script type="module" src="/album.js"></script>
+</head>
+<body>
+  <a class="skip" href="#new-memory" data-copy="skip">새 기록으로 건너뛰기</a>
+  <header class="mast">
+    <div class="wrap mast-inner">
+      <a class="brand" href="/"><img class="brand-icon" src="/assets/last-stop-seoul.png" width="32" height="32" alt=""><span data-copy="brand">여행의 종점은 서울</span></a>
+      <nav aria-label="Site"><a href="/" data-copy="home">홈으로</a></nav>
+      <button id="language" class="language" type="button" aria-label="Switch to English">EN</button>
+    </div>
+  </header>
+  <main class="wrap album">
+    <header class="album-heading">
+      <h1 data-copy="heading">나의 서울 포토북</h1>
+      <p data-copy="privacy">사진과 동영상은 이 기기의 브라우저에 저장됩니다.</p>
+    </header>
+    <fieldset class="cover-selection">
+      <legend data-copy="coverSelect">표지 고르기</legend>
+      <div class="cover-options">
+        <label>
+          <input type="radio" name="book-cover" value="paper" form="album-form" checked>
+          <span class="cover-option">
+            <span class="book-cover" data-cover="paper"><img src="/assets/palace.webp" alt=""><span data-copy="paper">한지 일기</span></span>
+          </span>
+        </label>
+        <label>
+          <input type="radio" name="book-cover" value="ticket" form="album-form">
+          <span class="cover-option">
+            <span class="book-cover" data-cover="ticket"><img src="/assets/station.webp" alt=""><span data-copy="ticket">서울행 승차권</span></span>
+          </span>
+        </label>
+        <label>
+          <input type="radio" name="book-cover" value="city" form="album-form">
+          <span class="cover-option">
+            <span class="book-cover" data-cover="city"><img src="/assets/hero-small.webp" alt=""><span data-copy="city">서울 풍경</span></span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+    <div class="album-layout">
+      <section id="new-memory" class="album-editor" aria-labelledby="new-title">
+        <h2 id="new-title" data-copy="newMemory">새 포토북</h2>
+        <form id="album-form">
+          <label class="album-field">
+            <span data-copy="entryTitle">제목</span>
+            <input id="entry-title" maxlength="80" required autocomplete="off">
+          </label>
+          <label class="album-field">
+            <span data-copy="entryDate">방문 날짜</span>
+            <input id="entry-date" type="date" required>
+          </label>
+          <label class="album-field">
+            <span data-copy="entryNote">기억하고 싶은 순간 (선택)</span>
+            <textarea id="entry-note" rows="3" maxlength="500"></textarea>
+          </label>
+          <label class="album-file">
+            <span class="album-file-title" data-copy="addMedia">사진·동영상 선택</span>
+            <small id="file-summary" data-copy="noFile">선택한 파일 없음</small>
+            <input id="entry-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm" multiple required aria-describedby="file-details file-summary">
+          </label>
+          <p class="album-file-details" id="file-details" data-copy="fileDetails">사진은 20메가바이트, 영상은 150메가바이트까지 선택할 수 있습니다. 한 기록은 160메가바이트까지 저장됩니다.</p>
+          <button type="submit" class="action" id="save-entry" disabled data-copy="save">앨범에 저장</button>
+          <p class="album-status" id="album-status" role="status" aria-live="polite"></p>
+        </form>
+        <noscript><p>앨범을 사용하려면 JavaScript가 필요합니다.</p></noscript>
+      </section>
+      <section class="album-entries" aria-labelledby="entries-title">
+        <div class="album-entries-heading">
+          <h2 id="entries-title" data-copy="entries">내 포토북</h2>
+          <p id="entry-count" role="status"></p>
+        </div>
+        <p id="empty-album" class="album-empty" data-copy="empty">여행에서 찍은 첫 사진이나 영상을 남겨보세요.</p>
+        <div id="album-list"></div>
+      </section>
+    </div>
+  </main>
+  <footer class="wrap footer">
+    <details>
+      <summary data-copy="credit">표지 사진 출처</summary>
+      <ul>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Deoksugung_Palace_20240409_088.jpg">Mobius6, Deoksugung</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:문화역서울284_2024.jpg">Narubaru7, Culture Station Seoul 284</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Cityscape_of_Jung-gu_Seoul_Station_Seoullo_7017_20240216.jpg">Sean Young, Seoul Station</a></li>
+      </ul>
+      <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+    </details>
+  </footer>
+  <template id="album-entry">
+    <article class="album-entry">
+      <header class="album-entry-heading">
+        <div><time></time><h3></h3></div>
+        <button class="small-button" type="button" data-remove></button>
+      </header>
+      <button class="album-open" type="button" data-open>
+        <span class="book-cover"><img alt=""><span></span></span>
+      </button>
+      <p class="album-note"></p>
+    </article>
+  </template>
+  <dialog id="book-dialog" class="book-dialog" aria-labelledby="book-title">
+    <header class="player-top">
+      <h2 id="book-title"></h2>
+      <button type="button" id="close-book" class="round-button" aria-label="포토북 닫기">×</button>
+    </header>
+    <div class="book-stage" id="book-stage"></div>
+    <nav class="book-nav" aria-label="Pages">
+      <button type="button" class="small-button" id="book-prev" data-copy="previous">이전 페이지</button>
+      <p id="book-progress" role="status" aria-live="polite"></p>
+      <button type="button" class="small-button" id="book-next" data-copy="next">다음 페이지</button>
+    </nav>
+  </dialog>
+</body>
+</html>
