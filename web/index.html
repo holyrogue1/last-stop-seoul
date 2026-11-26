@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101016">
   <meta name="description" content="서울역에서 남은 시간으로 갈 수 있는 명소와 복귀 시간을 확인하는 서울 관광 시연 웹">
   <title>여행의 종점은 서울 | Last Stop Seoul</title>
-  <link rel="icon" href="/assets/station.webp" type="image/webp">
+  <link rel="icon" href="/assets/last-stop-seoul.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
   <script type="module" src="/app.js"></script>
 </head>
@@ -14,7 +14,7 @@
   <a class="skip" href="#plan" data-copy="skip">여정으로 건너뛰기</a>
   <header class="mast">
     <div class="wrap mast-inner">
-      <a class="brand" href="#top"><span class="brand-icon" aria-hidden="true">＋</span><span data-copy="brand">여행의 종점은 서울</span></a>
+      <a class="brand" href="#top"><img class="brand-icon" src="/assets/last-stop-seoul.png" width="32" height="32" alt=""><span data-copy="brand">여행의 종점은 서울</span></a>
       <nav aria-label="Sections"><a href="#plan" data-copy="navPlan">지금의 여정</a><a href="#videos" data-copy="navVideo">명소 영상</a></nav>
       <button type="button" class="language" id="language" aria-label="Switch to English">EN</button>
     </div>
@@ -29,6 +29,21 @@
           <a class="action" href="#plan" id="find-now"><span data-copy="cta">지금 출발</span><span aria-hidden="true">↗</span></a>
           <a class="browse-action" href="#videos"><span data-copy="browse">명소 둘러보기</span><span aria-hidden="true">↓</span></a>
         </div>
+        <nav class="hero-themes" aria-labelledby="hero-themes-title">
+          <h2 id="hero-themes-title" class="sr-only" data-copy="quickThemes">테마 영상 바로가기</h2>
+          <a href="#video-results" data-quick-theme="food-alley">
+            <span><strong data-copy="foodAlley">먹자골목</strong><small data-copy="quickFood">건대·홍대</small></span><span aria-hidden="true">↘</span>
+          </a>
+          <a href="#video-results" data-quick-theme="shop">
+            <span><strong data-copy="shop">쇼핑</strong><small data-copy="quickShop">잠실·반포</small></span><span aria-hidden="true">↘</span>
+          </a>
+          <a href="#video-results" data-quick-theme="quiet">
+            <span><strong data-copy="quiet">조용한 장소</strong><small data-copy="quickQuiet">박물관·미술관</small></span><span aria-hidden="true">↘</span>
+          </a>
+          <a href="#video-results" data-quick-theme="romantic">
+            <span><strong data-copy="romantic">낭만 있는 장소</strong><small data-copy="quickRomantic">북악·낙산</small></span><span aria-hidden="true">↘</span>
+          </a>
+        </nav>
       </div>
       <figure class="hero-photo">
         <picture>
@@ -117,7 +132,7 @@
             </div>
           </details>
         </div>
-        <div class="feed-panel">
+        <div class="feed-panel" id="video-results" tabindex="-1">
           <div class="feed-top">
             <div class="feed-label">
               <h3 id="feed-heading"></h3>

@@ -48,6 +48,9 @@ const copy = {
   etaNow: ["도착 임박", "Due"], lastChecked: ["자료 시각", "Data time"], stale: ["시간표·도보 기준", "Timetable and walking estimates"],
   showArea: ["탐색 범위", "Explore"], near: ["서울역 근처", "Near Seoul Station"], city: ["서울 전체", "All Seoul"],
   keyword: ["테마", "Themes"], all: ["전체", "All"], scenery: ["풍경", "Scenery"], night: ["야경", "Night views"],
+  quickThemes: ["테마 영상 바로가기", "Jump to theme videos"],
+  quickFood: ["건대·홍대", "Kondae & Hongdae"], quickShop: ["잠실·반포", "Jamsil & Banpo"],
+  quickQuiet: ["박물관·미술관", "Museums & art"], quickRomantic: ["북악·낙산", "Bugak & Naksan"],
   food: ["맛집", "Food"], busy: ["사람 많은 곳", "Lively places"], quiet: ["조용한 장소", "Quiet places"],
   romantic: ["낭만 있는 장소", "Romantic spots"],
   shop: ["쇼핑", "Shopping"], foodAlley: ["먹자골목", "Food alleys"], trail: ["트레킹·둘레길", "Hiking & walking"], district: ["지역", "District"],
@@ -333,6 +336,25 @@ function selectMode(value) {
   update();
 }
 
+function selectCityTheme(value) {
+  scope = "city";
+  district = "all";
+  interest = value;
+  byId("district").value = district;
+  document.querySelector("[name=scope][value=city]").checked = true;
+  document.querySelector(`[name=interest][value="${value}"]`).checked = true;
+}
+
+function showCityVideos(value) {
+  selectCityTheme(value);
+  collection = "";
+  feed.scrollLeft = 0;
+  update();
+  const results = byId("video-results");
+  results.focus({ preventScroll: true });
+  results.scrollIntoView({ block: "start" });
+}
+
 function openVideo(place, trigger) {
   activeVideo = place;
   videoTrigger = trigger;
@@ -363,12 +385,7 @@ for (const input of document.querySelectorAll("[name=scope], [name=interest]")) 
       }
     } else {
       interest = input.value;
-      if (cityInterests.has(interest)) {
-        scope = "city";
-        district = "all";
-        byId("district").value = district;
-        document.querySelector("[name=scope][value=city]").checked = true;
-      }
+      if (cityInterests.has(interest)) selectCityTheme(interest);
     }
     collection = "";
     byId("feed").scrollLeft = 0;
@@ -399,17 +416,13 @@ byId("trends-file").addEventListener("change", async (event) => {
   renderFeed();
 });
 byId("find-now").addEventListener("click", () => selectMode("now"));
-byId("explore-trek").addEventListener("click", () => {
-  scope = "city";
-  interest = "trail";
-  district = "all";
-  byId("district").value = district;
-  document.querySelector("[name=scope][value=city]").checked = true;
-  document.querySelector("[name=interest][value=trail]").checked = true;
-  byId("feed").scrollLeft = 0;
-  update();
-  byId("feed").scrollIntoView({ block: "nearest" });
-});
+byId("explore-trek").addEventListener("click", () => showCityVideos("trail"));
+for (const link of document.querySelectorAll("[data-quick-theme]")) {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    showCityVideos(link.dataset.quickTheme);
+  });
+}
 byId("refresh").addEventListener("click", refresh);
 byId("language").addEventListener("click", () => {
   language = 1 - language;
