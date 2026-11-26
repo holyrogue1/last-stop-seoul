@@ -1,7 +1,17 @@
-// The build prepends the route module and embeds the local static assets.
+// The build prepends the service modules and embeds the local static assets.
+const conciergeDependencies = {
+  places, opening, makePlan, presets, discover, minutes, hhmm,
+  clock: seoulClock,
+  live: async () => (await serveLive()).json(),
+  sageConfigured,
+  infer: parseWithSageMaker,
+  fetcher: (...args) => fetch(...args),
+};
+
 export default {
-  async fetch(request) {
+  async fetch(request, env = {}) {
     const url = new URL(request.url);
+    if (url.pathname === "/api/concierge") return serveConcierge(request, env, conciergeDependencies);
     if (!["GET", "HEAD"].includes(request.method)) {
       return new Response("Method not allowed", { status: 405, headers: { allow: "GET, HEAD" } });
     }

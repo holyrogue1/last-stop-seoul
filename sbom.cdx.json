@@ -1,0 +1,116 @@
+{
+  "$schema": "https://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:f6ee0c6e-6ffd-4242-ac97-12dd43141ade",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "bom-ref": "app:seoul-one-more",
+      "type": "application",
+      "name": "seoul-one-more",
+      "description": "여행의 종점은 서울. Uses native browser and Worker APIs with no npm dependencies."
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "file:spoqa-han-sans-neo-regular",
+      "type": "file",
+      "group": "Spoqa",
+      "name": "Spoqa Han Sans Neo Regular",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "4249bafc6673772edd9f3ed64589496ffbbd084a81dd85d6e170058fad86d117"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "OFL-1.1",
+            "url": "https://github.com/spoqa/spoqa-han-sans/blob/main/LICENSE"
+          }
+        }
+      ],
+      "properties": [
+        { "name": "seoul-one-more:bundled-path", "value": "web/assets/spoqa-regular.woff2" }
+      ]
+    },
+    {
+      "bom-ref": "file:spoqa-han-sans-neo-bold",
+      "type": "file",
+      "group": "Spoqa",
+      "name": "Spoqa Han Sans Neo Bold",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "c85faa3fa812cae9fad6eadc662b0e68c84f010b61c5c0ebc769a7b43e0fcd4d"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "OFL-1.1",
+            "url": "https://github.com/spoqa/spoqa-han-sans/blob/main/LICENSE"
+          }
+        }
+      ],
+      "properties": [
+        { "name": "seoul-one-more:bundled-path", "value": "web/assets/spoqa-bold.woff2" }
+      ]
+    }
+  ],
+  "services": [
+    {
+      "bom-ref": "service:sagemaker",
+      "name": "Amazon SageMaker Runtime",
+      "description": "Optional server-configured LLM inference."
+    },
+    {
+      "bom-ref": "service:seoul-open-data",
+      "name": "Seoul Open Data Plaza",
+      "description": "Public subway arrival and city crowd data."
+    },
+    {
+      "bom-ref": "service:open-meteo",
+      "name": "Open-Meteo",
+      "description": "Weather lookup using the demo's public API."
+    },
+    {
+      "bom-ref": "service:youtube",
+      "name": "YouTube",
+      "description": "Publisher-controlled video player and metadata."
+    },
+    {
+      "bom-ref": "service:google-maps",
+      "name": "Google Maps",
+      "description": "User-opened maps and directions links."
+    },
+    {
+      "bom-ref": "service:fossgis",
+      "name": "FOSSGIS",
+      "description": "Optional OpenStreetMap-based walking route lookup."
+    },
+    {
+      "bom-ref": "service:google-trends",
+      "name": "Google Trends",
+      "description": "External user-opened comparison links."
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "app:seoul-one-more",
+      "dependsOn": [
+        "file:spoqa-han-sans-neo-regular",
+        "file:spoqa-han-sans-neo-bold",
+        "service:sagemaker",
+        "service:seoul-open-data",
+        "service:open-meteo",
+        "service:youtube",
+        "service:google-maps",
+        "service:fossgis",
+        "service:google-trends"
+      ]
+    }
+  ]
+}
