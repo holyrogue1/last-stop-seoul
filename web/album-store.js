@@ -24,5 +24,5 @@ async function useAlbum(mode, operation) {
 }
 
 export const readAlbum = () => useAlbum("readonly", (store) => store.getAll());
-export const saveEntry = (entry) => useAlbum("readwrite", (store) => store.add(entry));
+export const saveEntry = (entry) => useAlbum("readwrite", (store) => store.put(entry));
 export const removeEntry = (id) => useAlbum("readwrite", (store) => store.delete(id));

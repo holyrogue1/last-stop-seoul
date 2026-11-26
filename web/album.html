@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/album.css">
   <script type="module" src="/album.js"></script>
 </head>
-<body>
+<body class="album-page">
   <a class="skip" href="#new-memory" data-copy="skip">새 기록으로 건너뛰기</a>
   <header class="mast">
     <div class="wrap mast-inner">
@@ -22,35 +22,23 @@
   </header>
   <main class="wrap album">
     <header class="album-heading">
-      <h1 data-copy="heading">나의 서울 포토북</h1>
-      <p data-copy="privacy">사진과 동영상은 이 기기의 브라우저에 저장됩니다.</p>
-    </header>
-    <fieldset class="cover-selection">
-      <legend data-copy="coverSelect">표지 고르기</legend>
-      <div class="cover-options">
-        <label>
-          <input type="radio" name="book-cover" value="paper" form="album-form" checked>
-          <span class="cover-option">
-            <span class="book-cover" data-cover="paper"><img src="/assets/palace.webp" alt=""><span data-copy="paper">한지 일기</span></span>
-          </span>
-        </label>
-        <label>
-          <input type="radio" name="book-cover" value="ticket" form="album-form">
-          <span class="cover-option">
-            <span class="book-cover" data-cover="ticket"><img src="/assets/station.webp" alt=""><span data-copy="ticket">서울행 승차권</span></span>
-          </span>
-        </label>
-        <label>
-          <input type="radio" name="book-cover" value="city" form="album-form">
-          <span class="cover-option">
-            <span class="book-cover" data-cover="city"><img src="/assets/hero-small.webp" alt=""><span data-copy="city">서울 풍경</span></span>
-          </span>
-        </label>
+      <div>
+        <h1 data-copy="heading">나의 서울 포토북</h1>
+        <p data-copy="privacy">사진과 동영상은 이 기기의 브라우저에 저장됩니다.</p>
       </div>
-    </fieldset>
+      <a class="text-link" href="#saved-books" data-copy="entries">내 포토북</a>
+    </header>
     <div class="album-layout">
+      <section class="template-panel" aria-labelledby="template-title">
+        <h2 id="template-title" data-copy="coverSelect">템플릿</h2>
+        <div id="template-options" class="cover-options"></div>
+      </section>
       <section id="new-memory" class="album-editor" aria-labelledby="new-title">
-        <h2 id="new-title" data-copy="newMemory">새 포토북</h2>
+        <div class="editor-heading">
+          <div><h2 id="new-title" data-copy="newMemory">포토북 편집</h2><p id="editor-template" role="status"></p></div>
+          <button id="preview-book" class="small-button" type="button" data-copy="preview">책으로 미리보기</button>
+        </div>
+        <div class="editor-stage" id="draft-stage"></div>
         <form id="album-form">
           <label class="album-field">
             <span data-copy="entryTitle">제목</span>
@@ -64,26 +52,39 @@
             <span data-copy="entryNote">기억하고 싶은 순간 (선택)</span>
             <textarea id="entry-note" rows="3" maxlength="500"></textarea>
           </label>
-          <label class="album-file">
-            <span class="album-file-title" data-copy="addMedia">사진·동영상 선택</span>
-            <small id="file-summary" data-copy="noFile">선택한 파일 없음</small>
-            <input id="entry-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm" multiple required aria-describedby="file-details file-summary">
+          <label class="album-field" id="page-note-field" hidden>
+            <span data-copy="pageNote">선택한 페이지 설명 (선택)</span>
+            <textarea id="page-note" rows="2" maxlength="500"></textarea>
           </label>
-          <p class="album-file-details" id="file-details" data-copy="fileDetails">사진은 20메가바이트, 영상은 150메가바이트까지 선택할 수 있습니다. 한 기록은 160메가바이트까지 저장됩니다.</p>
-          <button type="submit" class="action" id="save-entry" disabled data-copy="save">앨범에 저장</button>
+          <div class="editor-actions">
+            <button type="submit" class="action" id="save-entry" disabled data-copy="save">포토북 저장</button>
+            <button type="button" class="small-button" id="cancel-edit" hidden data-copy="cancelEdit">편집 종료</button>
+          </div>
           <p class="album-status" id="album-status" role="status" aria-live="polite"></p>
         </form>
         <noscript><p>앨범을 사용하려면 JavaScript가 필요합니다.</p></noscript>
       </section>
-      <section class="album-entries" aria-labelledby="entries-title">
-        <div class="album-entries-heading">
-          <h2 id="entries-title" data-copy="entries">내 포토북</h2>
-          <p id="entry-count" role="status"></p>
-        </div>
-        <p id="empty-album" class="album-empty" data-copy="empty">여행에서 찍은 첫 사진이나 영상을 남겨보세요.</p>
-        <div id="album-list"></div>
+      <section class="page-panel" aria-labelledby="pages-title">
+        <h2 id="pages-title" data-copy="pages">페이지</h2>
+        <p id="draft-mode"></p>
+        <div id="draft-pages"></div>
+        <label class="album-file">
+          <span class="album-file-title" data-copy="addMedia">사진·동영상 추가</span>
+          <input id="entry-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm" multiple aria-describedby="file-details upload-status">
+        </label>
+        <p class="album-file-details" id="file-details" data-copy="fileDetails">사진당 20 MB, 영상당 150 MB, 포토북당 160 MB까지 담을 수 있습니다.</p>
+        <p class="album-status" id="upload-status" role="status"></p>
+        <button id="remove-page" class="small-button" type="button" hidden data-copy="removePage">선택 페이지 삭제</button>
       </section>
     </div>
+    <section class="album-entries" id="saved-books" aria-labelledby="entries-title">
+      <div class="album-entries-heading">
+        <h2 id="entries-title" data-copy="entries">내 포토북</h2>
+        <p id="entry-count" role="status"></p>
+      </div>
+      <p id="empty-album" class="album-empty" data-copy="empty">여행에서 찍은 첫 사진이나 영상을 남겨보세요.</p>
+      <div id="album-list"></div>
+    </section>
   </main>
   <footer class="wrap footer">
     <details>
@@ -92,6 +93,9 @@
         <li><a href="https://commons.wikimedia.org/wiki/File:Deoksugung_Palace_20240409_088.jpg">Mobius6, Deoksugung</a></li>
         <li><a href="https://commons.wikimedia.org/wiki/File:문화역서울284_2024.jpg">Narubaru7, Culture Station Seoul 284</a></li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Cityscape_of_Jung-gu_Seoul_Station_Seoullo_7017_20240216.jpg">Sean Young, Seoul Station</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Banpo_Bridge_Moonlight_Rainbow_Fountain_at_night_-_2023-08-14.jpg">Wvdp, Banpo Bridge (CC0)</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Deserted_namdaemun_market_(2533880394).jpg">Francisco Anzola, Namdaemun Market (CC BY 2.0)</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Seoul_Museum_of_History_in_2025.jpg">EllalineSeoul, Seoul Museum of History (CC0)</a></li>
       </ul>
       <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
     </details>
@@ -100,11 +104,9 @@
     <article class="album-entry">
       <header class="album-entry-heading">
         <div><time></time><h3></h3></div>
-        <button class="small-button" type="button" data-remove></button>
+        <div class="album-entry-actions"><button class="small-button" type="button" data-edit></button><button class="small-button" type="button" data-remove></button></div>
       </header>
-      <button class="album-open" type="button" data-open>
-        <span class="book-cover"><img alt=""><span></span></span>
-      </button>
+      <button class="album-open" type="button" data-open></button>
       <p class="album-note"></p>
     </article>
   </template>
@@ -119,6 +121,7 @@
       <p id="book-progress" role="status" aria-live="polite"></p>
       <button type="button" class="small-button" id="book-next" data-copy="next">다음 페이지</button>
     </nav>
+    <button type="button" class="action" id="apply-template" hidden data-copy="apply">이 템플릿으로 만들기</button>
   </dialog>
 </body>
 </html>

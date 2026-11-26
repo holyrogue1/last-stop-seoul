@@ -11,7 +11,7 @@ const types = {
 const images = (await readdir(new URL("web/assets/", root))).map((name) => "assets/" + name);
 const files = [
   "index.html", "styles.css", "app.js", "planner.js", "trends.js", "discover.js",
-  "album.html", "album.css", "album.js", "album-store.js", ...images,
+  "album.html", "album.css", "album.js", "album-store.js", "album-templates.js", ...images,
 ];
 const assets = {};
 for (const path of files) {
